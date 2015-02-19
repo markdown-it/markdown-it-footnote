@@ -37,7 +37,8 @@ isn’t indented.</p>
 belong to the previous footnote. <a href="#fnref2" class="footnote-backref">↩</a></p>
 </li>
 </ol>
-</section>```
+</section>
+```
 
 __Inline footnote__:
 
