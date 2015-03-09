@@ -74,8 +74,7 @@ They could be inside blockquotes, and are lazy:
 baz
 .
 <p><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
-<blockquote>
-</blockquote>
+<blockquote></blockquote>
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
