@@ -238,11 +238,13 @@ module.exports = function sub_plugin(md) {
     if (!state.env.footnotes.list) { return; }
     list = state.env.footnotes.list;
 
-    state.push('footnote_block_open', '', 1);
+    token = new state.Token('footnote_block_open', '', 1);
+    state.tokens.push(token);
 
     for (i = 0, l = list.length; i < l; i++) {
-      token      = state.push('footnote_open', '', 1);
+      token      = new state.Token('footnote_open', '', 1);
       token.meta = { id: i };
+      state.tokens.push(token);
 
       if (list[i].tokens) {
         tokens = [];
@@ -273,17 +275,21 @@ module.exports = function sub_plugin(md) {
 
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
-        token      = state.push('footnote_anchor', '', 0);
+        token      = new state.Token('footnote_anchor', '', 0);
         token.meta = { id: i, subId: j };
+        state.tokens.push(token);
       }
 
       if (lastParagraph) {
         state.tokens.push(lastParagraph);
       }
 
-      state.push('footnote_close', '', -1);
+      token = new state.Token('footnote_close', '', -1);
+      state.tokens.push(token);
     }
-    state.push('footnote_block_close', '', -1);
+
+    token = new state.Token('footnote_block_close', '', -1);
+    state.tokens.push(token);
   }
 
   md.block.ruler.before('reference', 'footnote_def', footnote_def, { alt: [ 'paragraph', 'reference' ] });
