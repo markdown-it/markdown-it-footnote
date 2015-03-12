@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-footnote",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Footnotes for markdown-it markdown parser.",
   "keywords": [
     "markdown-it-plugin",
@@ -28,7 +28,7 @@
     "eslint-plugin-nodeca": "^1.0.0",
     "istanbul": "*",
     "lodash": "*",
-    "markdown-it": "git+https://github.com/markdown-it/markdown-it.git#dev",
+    "markdown-it": "^4.0.0",
     "markdown-it-testgen": "~0.1.0",
     "mocha": "*",
     "request": "*",
