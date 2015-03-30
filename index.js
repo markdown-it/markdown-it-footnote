@@ -11,7 +11,9 @@ function _footnote_ref(tokens, idx) {
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+  var label = tokens[idx].meta.label;
+  id += ':' + label;
+  return '<sup class="footnote-ref"><a href="#fn' + n + ':' + label + '" id="' + id + '">[' + n + ']</a></sup>';
 }
 function _footnote_block_open(tokens, idx, options) {
   return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
@@ -23,6 +25,8 @@ function _footnote_block_close() {
 }
 function _footnote_open(tokens, idx) {
   var id = Number(tokens[idx].meta.id + 1).toString();
+  var label = tokens[idx].meta.label;
+  id += ':' + label;
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
 function _footnote_close() {
@@ -34,6 +38,8 @@ function _footnote_anchor(tokens, idx) {
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
+  var label = tokens[idx].meta.label;
+  id += ':' + label;
   return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
 }
 
@@ -148,6 +154,7 @@ module.exports = function sub_plugin(md) {
       oldLength = state.tokens.length;
       state.md.inline.tokenize(state);
       state.env.footnotes.list[footnoteId] = { tokens: state.tokens.splice(oldLength) };
+      token.meta.label = state.env.footnotes.list[footnoteId];
     }
 
     state.pos = labelEnd + 1;
@@ -202,7 +209,7 @@ module.exports = function sub_plugin(md) {
       state.env.footnotes.list[footnoteId].count++;
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, subId: footnoteSubId };
+      token.meta = { id: footnoteId, subId: footnoteSubId, label: label};
     }
 
     state.pos = pos;
@@ -243,7 +250,7 @@ module.exports = function sub_plugin(md) {
 
     for (i = 0, l = list.length; i < l; i++) {
       token      = new state.Token('footnote_open', '', 1);
-      token.meta = { id: i };
+      token.meta = { id: i, label: list[i].label };
       state.tokens.push(token);
 
       if (list[i].tokens) {
@@ -276,7 +283,7 @@ module.exports = function sub_plugin(md) {
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
         token      = new state.Token('footnote_anchor', '', 0);
-        token.meta = { id: i, subId: j };
+        token.meta = { id: i, subId: j, label: list[i].label };
         state.tokens.push(token);
       }
 
