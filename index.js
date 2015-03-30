@@ -6,14 +6,22 @@
 // Renderer partials
 
 function _footnote_ref(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
+  var n = Number(tokens[idx].meta.id + 1).toString(),
+      href = '#fn' + n,
+      id = 'fnref' + n,
+      label = tokens[idx].meta.label,
+      linkText = '[' + n  + ']';
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  var label = tokens[idx].meta.label;
-  id += ':' + label;
-  return '<sup class="footnote-ref"><a href="#fn' + n + ':' + label + '" id="' + id + '">[' + n + ']</a></sup>';
+  if (sub_plugin_options.labels_in_link) {
+    id += ':' + label;
+    href += ':' + label
+  };
+  if (sub_plugin_options.plain_links) {
+    linkText = n;
+  }
+  return '<sup class="footnote-ref"><a href="' + href + '" id="' + id + '">' + linkText + '</a></sup>';
 }
 function _footnote_block_open(tokens, idx, options) {
   return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
@@ -24,29 +32,40 @@ function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
 function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString();
-  var label = tokens[idx].meta.label;
-  id += ':' + label;
+  var id = Number(tokens[idx].meta.id + 1).toString(),
+      label = tokens[idx].meta.label;
+  if (sub_plugin_options.labels_in_link) {
+    id += ':' + label;
+  }
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
 function _footnote_close() {
   return '</li>\n';
 }
 function _footnote_anchor(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
+  var n = Number(tokens[idx].meta.id + 1).toString(),
+      id = 'fnref' + n;
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  var label = tokens[idx].meta.label;
-  id += ':' + label;
+  if (sub_plugin_options.labels_in_link) {
+    id += ':' + tokens[idx].meta.label;
+  }
   return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+var sub_plugin_options = {
+  'plain_links': false,
+  'labels_in_link': false
+};
 
+module.exports = function sub_plugin(md, options) {
 
-module.exports = function sub_plugin(md) {
+  if (options) {
+    sub_plugin_options = require('merge')(sub_plugin_options, options);
+  }
+  
   var parseLinkLabel = md.helpers.parseLinkLabel;
 
   md.renderer.rules.footnote_ref          = _footnote_ref;
