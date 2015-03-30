@@ -32,7 +32,9 @@
     "markdown-it-testgen": "~0.1.0",
     "mocha": "*",
     "request": "*",
-    "uglify-js": "*",
+    "uglify-js": "*"
+  },
+  "dependencies" : {
     "merge": "^1.2.0"
   }
 }
