@@ -32,10 +32,9 @@ function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
 function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString(),
-      label = tokens[idx].meta.label;
+  var id = Number(tokens[idx].meta.id + 1).toString();
   if (sub_plugin_options.labels_in_link) {
-    id += ':' + label;
+    id += ':' + tokens[idx].meta.label;
   }
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
@@ -65,7 +64,7 @@ module.exports = function sub_plugin(md, options) {
   if (options) {
     sub_plugin_options = require('merge')(sub_plugin_options, options);
   }
-  
+
   var parseLinkLabel = md.helpers.parseLinkLabel;
 
   md.renderer.rules.footnote_ref          = _footnote_ref;
