@@ -3,6 +3,13 @@
 'use strict';
 
 ////////////////////////////////////////////////////////////////////////////////
+// Plugin default options
+var sub_plugin_options = {
+  'plain_links': false,
+  'labels_in_link': false
+};
+
+////////////////////////////////////////////////////////////////////////////////
 // Renderer partials
 
 function _footnote_ref(tokens, idx) {
@@ -16,8 +23,8 @@ function _footnote_ref(tokens, idx) {
   }
   if (sub_plugin_options.labels_in_link) {
     id += ':' + label;
-    href += ':' + label
-  };
+    href += ':' + label;
+  }
   if (sub_plugin_options.plain_links) {
     linkText = n;
   }
@@ -54,10 +61,6 @@ function _footnote_anchor(tokens, idx) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-var sub_plugin_options = {
-  'plain_links': false,
-  'labels_in_link': false
-};
 
 module.exports = function sub_plugin(md, options) {
 
@@ -227,7 +230,7 @@ module.exports = function sub_plugin(md, options) {
       state.env.footnotes.list[footnoteId].count++;
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, subId: footnoteSubId, label: label};
+      token.meta = { id: footnoteId, subId: footnoteSubId, label: label };
     }
 
     state.pos = pos;
