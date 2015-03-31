@@ -2,12 +2,10 @@
 //
 'use strict';
 
+module.exports = function(md) {
 ////////////////////////////////////////////////////////////////////////////////
 // Plugin default options
-var sub_plugin_options = {
-  'plain_links': false,
-  'labels_in_link': false
-};
+var sub_plugin_options;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Renderer partials
@@ -17,11 +15,16 @@ function _footnote_ref(tokens, idx) {
       href = '#fn' + n,
       id = 'fnref' + n,
       label = tokens[idx].meta.label,
-      linkText = '[' + n  + ']';
+      linkText = '[' + n  + ']',
+      isInlineFootnote;
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
   if (sub_plugin_options.labels_in_link) {
+    isInlineFootnote = typeof label !== 'string';
+    if (isInlineFootnote) {
+      label = n;
+    }
     id += ':' + label;
     href += ':' + label;
   }
@@ -39,9 +42,15 @@ function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
 function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString();
+  var id = Number(tokens[idx].meta.id + 1).toString(),
+      label = tokens[idx].meta.label,
+      isInlineFootnote;
   if (sub_plugin_options.labels_in_link) {
-    id += ':' + tokens[idx].meta.label;
+    isInlineFootnote = typeof label !== 'string';
+    if (isInlineFootnote) {
+      label = id;
+    }
+    id += ':' + label;
   }
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
@@ -50,23 +59,25 @@ function _footnote_close() {
 }
 function _footnote_anchor(tokens, idx) {
   var n = Number(tokens[idx].meta.id + 1).toString(),
-      id = 'fnref' + n;
+      id = 'fnref' + n,
+      label = tokens[idx].meta.label,
+      isInlineFootnote;
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
   if (sub_plugin_options.labels_in_link) {
-    id += ':' + tokens[idx].meta.label;
+    isInlineFootnote = typeof label !== 'string';
+    if (isInlineFootnote) {
+      label = n;
+    }
+    id += ':' + label;
   }
   return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-module.exports = function sub_plugin(md, options) {
-
-  if (options) {
-    sub_plugin_options = require('merge')(sub_plugin_options, options);
-  }
+function sub_plugin(md, options) {
 
   var parseLinkLabel = md.helpers.parseLinkLabel;
 
@@ -175,7 +186,7 @@ module.exports = function sub_plugin(md, options) {
       oldLength = state.tokens.length;
       state.md.inline.tokenize(state);
       state.env.footnotes.list[footnoteId] = { tokens: state.tokens.splice(oldLength) };
-      token.meta.label = state.env.footnotes.list[footnoteId];
+      token.meta.label = state.env.footnotes.list[footnoteId].tokens;
     }
 
     state.pos = labelEnd + 1;
@@ -325,3 +336,18 @@ module.exports = function sub_plugin(md, options) {
   md.inline.ruler.after('footnote_inline', 'footnote_ref', footnote_ref);
   md.core.ruler.after('inline', 'footnote_tail', footnote_tail);
 };
+
+  
+  var isOldCall = md instanceof require('markdown-it');
+  sub_plugin_options = {
+    'plain_links': false,
+    'labels_in_link': false
+  };
+  if (isOldCall) {
+    return sub_plugin(md);
+  }
+  if (md) {
+    sub_plugin_options = require('merge')(sub_plugin_options, md);
+  }
+  return sub_plugin;
+}
