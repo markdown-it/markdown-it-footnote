@@ -12,3 +12,23 @@ describe('markdown-it-footnote', function () {
 
   generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
 });
+
+describe('markdown-it-footnote-labels', function () {
+  var md = require('markdown-it')()
+              .use(require('../')({
+                'labels_in_link': true
+              })
+            );
+
+  generate(path.join(__dirname, 'fixtures/footnote_labels.txt'), md);
+});
+
+describe('markdown-it-footnote-simple-links', function () {
+  var md = require('markdown-it')()
+              .use(require('../')({
+                'plain_links': true
+              })
+            );
+
+  generate(path.join(__dirname, 'fixtures/footnote_simple_link.txt'), md);
+});
