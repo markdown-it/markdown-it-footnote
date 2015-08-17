@@ -41,7 +41,8 @@ function _footnote_anchor(tokens, idx) {
 
 
 module.exports = function sub_plugin(md) {
-  var parseLinkLabel = md.helpers.parseLinkLabel;
+  var parseLinkLabel = md.helpers.parseLinkLabel,
+      isSpace = md.utils.isSpace;
 
   md.renderer.rules.footnote_ref          = _footnote_ref;
   md.renderer.rules.footnote_block_open   = _footnote_block_open;
@@ -52,7 +53,8 @@ module.exports = function sub_plugin(md) {
 
   // Process footnote block definition
   function footnote_def(state, startLine, endLine, silent) {
-    var oldBMark, oldTShift, oldParentType, pos, label, token,
+    var oldBMark, oldTShift, oldSCount, oldParentType, pos, label, token,
+        initial, offset, ch, posAfterColon,
         start = state.bMarks[startLine] + state.tShift[startLine],
         max = state.eMarks[startLine];
 
@@ -86,15 +88,37 @@ module.exports = function sub_plugin(md) {
 
     oldBMark = state.bMarks[startLine];
     oldTShift = state.tShift[startLine];
+    oldSCount = state.sCount[startLine];
     oldParentType = state.parentType;
-    state.tShift[startLine] = state.skipSpaces(pos) - pos;
-    state.bMarks[startLine] = pos;
+
+    posAfterColon = pos;
+    initial = offset = state.sCount[startLine] + pos - (state.bMarks[startLine] + state.tShift[startLine]);
+
+    while (pos < max) {
+      ch = state.src.charCodeAt(pos);
+
+      if (isSpace(ch)) {
+        if (ch === 0x09) {
+          offset += 4 - offset % 4;
+        } else {
+          offset++;
+        }
+      } else {
+        break;
+      }
+
+      pos++;
+    }
+
+    state.tShift[startLine] = pos - posAfterColon;
+    state.sCount[startLine] = offset - initial;
+
+    state.bMarks[startLine] = posAfterColon;
     state.blkIndent += 4;
     state.parentType = 'footnote';
 
-    if (state.tShift[startLine] < state.blkIndent) {
-      state.tShift[startLine] += state.blkIndent;
-      state.bMarks[startLine] -= state.blkIndent;
+    if (state.sCount[startLine] < state.blkIndent) {
+      state.sCount[startLine] += state.blkIndent;
     }
 
     state.md.block.tokenize(state, startLine, endLine, true);
@@ -102,6 +126,7 @@ module.exports = function sub_plugin(md) {
     state.parentType = oldParentType;
     state.blkIndent -= 4;
     state.tShift[startLine] = oldTShift;
+    state.sCount[startLine] = oldSCount;
     state.bMarks[startLine] = oldBMark;
 
     token       = new state.Token('footnote_reference_close', '', -1);

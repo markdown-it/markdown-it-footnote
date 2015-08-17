@@ -183,6 +183,22 @@ Indents for the first line:
 </section>
 .
 
+Indents for the first line (tabs):
+.
+[^xxxxx]
+
+[^xxxxx]:		foo
+.
+<p><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1"  class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+.
+
 
 Security 1
 .
