@@ -141,8 +141,8 @@ module.exports = function sub_plugin(md) {
     var labelStart,
         labelEnd,
         footnoteId,
-        oldLength,
         token,
+        tokens,
         max = state.posMax,
         start = state.pos;
 
@@ -164,15 +164,17 @@ module.exports = function sub_plugin(md) {
       if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
       footnoteId = state.env.footnotes.list.length;
 
-      state.pos = labelStart;
-      state.posMax = labelEnd;
+      state.md.inline.parse(
+        state.src.slice(labelStart, labelEnd),
+        state.md,
+        state.env,
+        tokens = []
+      );
 
       token      = state.push('footnote_ref', '', 0);
       token.meta = { id: footnoteId };
 
-      oldLength = state.tokens.length;
-      state.md.inline.tokenize(state);
-      state.env.footnotes.list[footnoteId] = { tokens: state.tokens.splice(oldLength) };
+      state.env.footnotes.list[footnoteId] = { tokens: tokens };
     }
 
     state.pos = labelEnd + 1;
