@@ -6,7 +6,7 @@
 
 > Footnotes plugin for [markdown-it](https://github.com/markdown-it/markdown-it) markdown parser.
 
-__v1.+ requires `markdown-it` v4.+, see changelog.__
+__v2.+ requires `markdown-it` v5.+, see changelog.__
 
 Markup is based on [pandoc](http://johnmacfarlane.net/pandoc/README.html#footnotes) definition.
 
