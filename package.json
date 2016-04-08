@@ -21,6 +21,9 @@
   "scripts": {
     "test": "make test"
   },
+  "dependencies": {
+    "merge": "^1.2.0",
+  },
   "devDependencies": {
     "browserify": "*",
     "coveralls": "^2.11.2",

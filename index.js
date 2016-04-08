@@ -5,6 +5,7 @@
 var merge = require('merge');
 
 var defaultOptions = {
+  'omit_square_brackets': false
 };
 
 module.exports = function sub_plugin(md, options) {
@@ -22,7 +23,8 @@ module.exports = function sub_plugin(md, options) {
     if (tokens[idx].meta.subId > 0) {
       id += ':' + tokens[idx].meta.subId;
     }
-  return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+    var text = options.omit_square_brackets ? n : '[' + n + ']';
+    return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">' + text + '</a></sup>';
   }
   function _footnote_block_open(tokens, idx, options) {
     return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
