@@ -173,7 +173,7 @@ module.exports = function sub_plugin(md, options) {
     if (!silent) {
       if (!state.env.footnotes) { state.env.footnotes = {}; }
       if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
-      footnoteId = options.use_uuids ? uuid.v4() : state.env.footnotes.list.length;
+      footnoteId = options.use_uuids ? uuid.v4() : state.env.footnotes.list.length + 1;
 
       state.md.inline.parse(
         state.src.slice(labelStart, labelEnd),
@@ -291,8 +291,10 @@ module.exports = function sub_plugin(md, options) {
 
     for (i = 0, l = list.length; i < l; i++) {
       token      = new state.Token('footnote_open', '', 1);
-      token.meta = { id: i };
+      token.meta = { id: list[i].id };
       state.tokens.push(token);
+
+      var outerToken = token;
 
       if (list[i].tokens) {
         tokens = [];
@@ -311,7 +313,6 @@ module.exports = function sub_plugin(md, options) {
         tokens.push(token);
 
       } else if (list[i].label) {
-        token.meta.id = list[i].id;
         tokens = refTokens[':' + list[i].label];
       }
 
@@ -324,7 +325,6 @@ module.exports = function sub_plugin(md, options) {
 
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
-        var outerToken = token;
         token      = new state.Token('footnote_anchor', '', 0);
         token.meta = { id: outerToken.meta.id, subId: j };
         state.tokens.push(token);
