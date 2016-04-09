@@ -5,6 +5,45 @@
 var uuid = require('node-uuid');
 var merge = require('merge');
 
+////////////////////////////////////////////////////////////////////////////////
+// Renderer partials
+
+function _footnote_ref(tokens, idx) {
+  var text = tokens[idx].meta.text;
+  var targetId = 'fn' + tokens[idx].meta.id.toString();
+  var id = 'fnref' + tokens[idx].meta.id.toString();
+  if (tokens[idx].meta.subId > 0) {
+    id += ':' + tokens[idx].meta.subId;
+  }
+  
+  return '<sup class="footnote-ref"><a href="#' + targetId + '" id="' + id + '">' + text + '</a></sup>';
+}
+function _footnote_block_open(tokens, idx, options) {
+  return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
+         '<section class="footnotes">\n' +
+         '<ol class="footnotes-list">\n';
+}
+function _footnote_block_close() {
+  return '</ol>\n</section>\n';
+}
+function _footnote_open(tokens, idx) {
+  var id = tokens[idx].meta.id.toString();
+  return '<li id="fn' + id + '"  class="footnote-item">';
+}
+function _footnote_close() {
+  return '</li>\n';
+}
+function _footnote_anchor(tokens, idx) {
+  var n = tokens[idx].meta.id.toString();
+  var id = 'fnref' + n;
+  if (tokens[idx].meta.subId > 0) {
+    id += ':' + tokens[idx].meta.subId;
+  }
+  return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 var defaultOptions = {
   'use_uuids': false,
   'omit_square_brackets': false
@@ -15,45 +54,6 @@ module.exports = function sub_plugin(md, options) {
 
   var parseLinkLabel = md.helpers.parseLinkLabel,
       isSpace = md.utils.isSpace;
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // Renderer partials
-
-  function _footnote_ref(tokens, idx) {
-    var n = Number(tokens[idx].meta.number).toString();
-    var targetId = 'fn' + tokens[idx].meta.id.toString();
-    var id = 'fnref' + tokens[idx].meta.id.toString();
-    if (tokens[idx].meta.subId > 0) {
-      id += ':' + tokens[idx].meta.subId;
-    }
-    var text = options.omit_square_brackets ? n : '[' + n + ']';
-    return '<sup class="footnote-ref"><a href="#' + targetId + '" id="' + id + '">' + text + '</a></sup>';
-  }
-  function _footnote_block_open(tokens, idx, options) {
-    return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
-           '<section class="footnotes">\n' +
-           '<ol class="footnotes-list">\n';
-  }
-  function _footnote_block_close() {
-    return '</ol>\n</section>\n';
-  }
-  function _footnote_open(tokens, idx) {
-    var id = tokens[idx].meta.id.toString();
-    return '<li id="fn' + id + '"  class="footnote-item">';
-  }
-  function _footnote_close() {
-    return '</li>\n';
-  }
-  function _footnote_anchor(tokens, idx) {
-    var n = tokens[idx].meta.id.toString();
-    var id = 'fnref' + n;
-    if (tokens[idx].meta.subId > 0) {
-      id += ':' + tokens[idx].meta.subId;
-    }
-    return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
 
   md.renderer.rules.footnote_ref          = _footnote_ref;
   md.renderer.rules.footnote_block_open   = _footnote_block_open;
@@ -183,7 +183,9 @@ module.exports = function sub_plugin(md, options) {
       );
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, number: state.env.footnotes.list.length + 1 };
+      var number = state.env.footnotes.list.length + 1;
+      var text = options.omit_square_brackets ? Number(number).toString() : '[' + number + ']';
+      token.meta = { id: footnoteId, number: number, text: text };
 
       state.env.footnotes.list.push({ tokens: tokens, id: footnoteId });
     }
@@ -250,7 +252,9 @@ module.exports = function sub_plugin(md, options) {
       state.env.footnotes.list[footnoteIndex].count++;
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, subId: footnoteSubId, number: footnoteIndex + 1 };
+      var number = footnoteIndex + 1;
+      var text = options.omit_square_brackets ? Number(number).toString() : '[' + number + ']';
+      token.meta = { id: footnoteId, subId: footnoteSubId, number: number, text: text };
     }
 
     state.pos = pos;
