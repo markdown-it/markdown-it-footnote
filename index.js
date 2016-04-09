@@ -229,14 +229,18 @@ module.exports = function sub_plugin(md, options) {
     if (!silent) {
       if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
 
-      if (state.env.footnotes.refs[':' + label].index == null) {
+      if (state.env.footnotes.refs[':' + label].index === null) {
         footnoteIndex = state.env.footnotes.list.length;
         state.env.footnotes.refs[':' + label].index = state.env.footnotes.list.length;
       } else {
         footnoteIndex = state.env.footnotes.refs[':' + label].index;
       }
 
-      footnoteId = state.env.footnotes.refs[':' + label].id
+      if (state.env.footnotes.refs[':' + label].id === null) {
+        state.env.footnotes.refs[':' + label].id = footnoteIndex + 1;
+      }
+
+      footnoteId = state.env.footnotes.refs[':' + label].id;
 
       if (typeof state.env.footnotes.list[footnoteIndex] === 'undefined') {
         state.env.footnotes.list[footnoteIndex] = { label: label, count: 0, id: footnoteId, index: footnoteIndex };
@@ -307,7 +311,7 @@ module.exports = function sub_plugin(md, options) {
         tokens.push(token);
 
       } else if (list[i].label) {
-        token.meta.id = list[i].id
+        token.meta.id = list[i].id;
         tokens = refTokens[':' + list[i].label];
       }
 
@@ -320,7 +324,7 @@ module.exports = function sub_plugin(md, options) {
 
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
-        var outerToken = token
+        var outerToken = token;
         token      = new state.Token('footnote_anchor', '', 0);
         token.meta = { id: outerToken.meta.id, subId: j };
         state.tokens.push(token);
