@@ -2,16 +2,24 @@
 //
 'use strict';
 
+function prefixedId(id, env) {
+  var prefix = '';
+  if (typeof env.docId === 'string' && env.docId.length > 0) {
+    prefix = '-' + env.docId + '-';
+  }
+  return prefix + id;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Renderer partials
 
-function _footnote_ref(tokens, idx) {
+function _footnote_ref(tokens, idx, options, env) {
   var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
+  var id = 'fnref' + prefixedId(n, env);
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+  return '<sup class="footnote-ref"><a href="#fn' + prefixedId(n, env) + '" id="' + id + '">[' + n + ']</a></sup>';
 }
 function _footnote_block_open(tokens, idx, options) {
   return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
@@ -21,16 +29,16 @@ function _footnote_block_open(tokens, idx, options) {
 function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
-function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString();
+function _footnote_open(tokens, idx, options, env) {
+  var id = prefixedId(Number(tokens[idx].meta.id + 1).toString(), env);
   return '<li id="fn' + id + '" class="footnote-item">';
 }
 function _footnote_close() {
   return '</li>\n';
 }
-function _footnote_anchor(tokens, idx) {
+function _footnote_anchor(tokens, idx, options, env) {
   var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
+  var id = 'fnref' + prefixedId(n, env);
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
@@ -39,7 +47,6 @@ function _footnote_anchor(tokens, idx) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 
 module.exports = function sub_plugin(md) {
   var parseLinkLabel = md.helpers.parseLinkLabel,
