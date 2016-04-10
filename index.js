@@ -2,16 +2,21 @@
 //
 'use strict';
 
+var uuid = require('node-uuid');
+var merge = require('merge');
+
 ////////////////////////////////////////////////////////////////////////////////
 // Renderer partials
 
 function _footnote_ref(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
+  var text = tokens[idx].meta.text;
+  var targetId = 'fn' + tokens[idx].meta.id.toString();
+  var id = 'fnref' + tokens[idx].meta.id.toString();
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+  
+  return '<sup class="footnote-ref"><a href="#' + targetId + '" id="' + id + '">' + text + '</a></sup>';
 }
 function _footnote_block_open(tokens, idx, options) {
   return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
@@ -22,14 +27,14 @@ function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
 function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString();
+  var id = tokens[idx].meta.id.toString();
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
 function _footnote_close() {
   return '</li>\n';
 }
 function _footnote_anchor(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
+  var n = tokens[idx].meta.id.toString();
   var id = 'fnref' + n;
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
@@ -39,8 +44,14 @@ function _footnote_anchor(tokens, idx) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+var defaultOptions = {
+  'use_uuids': false,
+  'omit_square_brackets': false
+};
 
-module.exports = function sub_plugin(md) {
+module.exports = function sub_plugin(md, options) {
+  options = merge(defaultOptions, options);
+
   var parseLinkLabel = md.helpers.parseLinkLabel,
       isSpace = md.utils.isSpace;
 
@@ -79,7 +90,7 @@ module.exports = function sub_plugin(md) {
     if (!state.env.footnotes) { state.env.footnotes = {}; }
     if (!state.env.footnotes.refs) { state.env.footnotes.refs = {}; }
     label = state.src.slice(start + 2, pos - 2);
-    state.env.footnotes.refs[':' + label] = -1;
+    state.env.footnotes.refs[':' + label] = {id: options.use_uuids ? uuid.v4() : null, index: null};
 
     token       = new state.Token('footnote_reference_open', '', 1);
     token.meta  = { label: label };
@@ -162,7 +173,7 @@ module.exports = function sub_plugin(md) {
     if (!silent) {
       if (!state.env.footnotes) { state.env.footnotes = {}; }
       if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
-      footnoteId = state.env.footnotes.list.length;
+      footnoteId = options.use_uuids ? uuid.v4() : state.env.footnotes.list.length + 1;
 
       state.md.inline.parse(
         state.src.slice(labelStart, labelEnd),
@@ -172,9 +183,11 @@ module.exports = function sub_plugin(md) {
       );
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId };
+      var number = state.env.footnotes.list.length + 1;
+      var text = options.omit_square_brackets ? Number(number).toString() : '[' + number + ']';
+      token.meta = { id: footnoteId, number: number, text: text };
 
-      state.env.footnotes.list[footnoteId] = { tokens: tokens };
+      state.env.footnotes.list.push({ tokens: tokens, id: footnoteId });
     }
 
     state.pos = labelEnd + 1;
@@ -186,6 +199,7 @@ module.exports = function sub_plugin(md) {
   function footnote_ref(state, silent) {
     var label,
         pos,
+        footnoteIndex,
         footnoteId,
         footnoteSubId,
         token,
@@ -217,19 +231,30 @@ module.exports = function sub_plugin(md) {
     if (!silent) {
       if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
 
-      if (state.env.footnotes.refs[':' + label] < 0) {
-        footnoteId = state.env.footnotes.list.length;
-        state.env.footnotes.list[footnoteId] = { label: label, count: 0 };
-        state.env.footnotes.refs[':' + label] = footnoteId;
+      if (state.env.footnotes.refs[':' + label].index === null) {
+        footnoteIndex = state.env.footnotes.list.length;
+        state.env.footnotes.refs[':' + label].index = state.env.footnotes.list.length;
       } else {
-        footnoteId = state.env.footnotes.refs[':' + label];
+        footnoteIndex = state.env.footnotes.refs[':' + label].index;
       }
 
-      footnoteSubId = state.env.footnotes.list[footnoteId].count;
-      state.env.footnotes.list[footnoteId].count++;
+      if (state.env.footnotes.refs[':' + label].id === null) {
+        state.env.footnotes.refs[':' + label].id = footnoteIndex + 1;
+      }
+
+      footnoteId = state.env.footnotes.refs[':' + label].id;
+
+      if (typeof state.env.footnotes.list[footnoteIndex] === 'undefined') {
+        state.env.footnotes.list[footnoteIndex] = { label: label, count: 0, id: footnoteId, index: footnoteIndex };
+      }
+
+      footnoteSubId = state.env.footnotes.list[footnoteIndex].count;
+      state.env.footnotes.list[footnoteIndex].count++;
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, subId: footnoteSubId };
+      var number = footnoteIndex + 1;
+      var text = options.omit_square_brackets ? Number(number).toString() : '[' + number + ']';
+      token.meta = { id: footnoteId, subId: footnoteSubId, number: number, text: text };
     }
 
     state.pos = pos;
@@ -270,8 +295,10 @@ module.exports = function sub_plugin(md) {
 
     for (i = 0, l = list.length; i < l; i++) {
       token      = new state.Token('footnote_open', '', 1);
-      token.meta = { id: i };
+      token.meta = { id: list[i].id };
       state.tokens.push(token);
+
+      var outerToken = token;
 
       if (list[i].tokens) {
         tokens = [];
@@ -303,7 +330,7 @@ module.exports = function sub_plugin(md) {
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
         token      = new state.Token('footnote_anchor', '', 0);
-        token.meta = { id: i, subId: j };
+        token.meta = { id: outerToken.meta.id, subId: j };
         state.tokens.push(token);
       }
 
