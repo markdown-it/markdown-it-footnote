@@ -7,8 +7,13 @@ var generate = require('markdown-it-testgen');
 /*eslint-env mocha*/
 
 describe('markdown-it-footnote', function () {
-  var md = require('markdown-it')()
-              .use(require('../'));
+  it('Should work with default settings', function() {
+    var md = require('markdown-it')().use(require('../'));
+	generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
+  });
 
-  generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
-});
+  it('Should work with prefixed IDs', function () {
+    var md = require('markdown-it')().use(require('../'));
+    generate(path.join(__dirname, 'fixtures/footnote-prefixed.txt'), {}, { documentId: 'test-doc-id' }, md);
+  });
+ });

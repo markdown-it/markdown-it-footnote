@@ -29,7 +29,7 @@
     "istanbul": "*",
     "lodash": "*",
     "markdown-it": "markdown-it/markdown-it",
-    "markdown-it-testgen": "~0.1.0",
+    "markdown-it-testgen": "git://github.com/sadlerjw/markdown-it-testgen.git#env-testing",
     "mocha": "*",
     "request": "*",
     "uglify-js": "*"
