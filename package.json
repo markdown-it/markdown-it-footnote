@@ -29,9 +29,10 @@
     "istanbul": "*",
     "lodash": "*",
     "markdown-it": "markdown-it/markdown-it",
-    "markdown-it-testgen": "git://github.com/sadlerjw/markdown-it-testgen.git#env-testing",
+    "markdown-it-testgen": "~0.1.0",
     "mocha": "*",
     "request": "*",
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "chai": "~ 1.10.0"
   }
 }
