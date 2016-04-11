@@ -4,7 +4,7 @@
 
 function prefixedId(id, env) {
   var prefix = '';
-  if (typeof env.documentId === 'string') {
+  if (typeof env.documentId === 'string' && env.documentId.length > 0) {
     prefix = '-' + env.documentId + '-';
   }
   return prefix + id;
