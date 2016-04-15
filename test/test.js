@@ -3,7 +3,7 @@
 
 var path     = require('path');
 var generate = require('markdown-it-testgen');
-var assert   = require('chai').assert;
+var assert   = require('assert');
 var _        = require('lodash');
 
 /*eslint-env mocha*/

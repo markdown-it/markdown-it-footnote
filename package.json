@@ -32,7 +32,6 @@
     "markdown-it-testgen": "~0.1.0",
     "mocha": "*",
     "request": "*",
-    "uglify-js": "*",
-    "chai": "~ 1.10.0"
+    "uglify-js": "*"
   }
 }
