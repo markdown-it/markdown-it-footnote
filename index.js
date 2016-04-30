@@ -5,13 +5,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Renderer partials
 
-function _footnote_ref(tokens, idx) {
+function _footnote_n(tokens, idx) {
   var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
   if (tokens[idx].meta.subId > 0) {
-    id += ':' + tokens[idx].meta.subId;
+    n += ':' + tokens[idx].meta.subId;
   }
-  return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
+  return n;
+}
+
+function _footnote_ref(tokens, idx, options) {
+  var n = _footnote_n(tokens, idx);
+  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : n;
+  var caption = options.footnoteCaption ? options.footnoteCaption(n, tokens[idx]) : '[' + n + ']';
+  return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + id + '">' + caption + '</a></sup>';
 }
 function _footnote_block_open(tokens, idx, options) {
   return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
@@ -21,20 +27,18 @@ function _footnote_block_open(tokens, idx, options) {
 function _footnote_block_close() {
   return '</ol>\n</section>\n';
 }
-function _footnote_open(tokens, idx) {
-  var id = Number(tokens[idx].meta.id + 1).toString();
+function _footnote_open(tokens, idx, options) {
+  var n = _footnote_n(tokens, idx);
+  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : n;
   return '<li id="fn' + id + '"  class="footnote-item">';
 }
 function _footnote_close() {
   return '</li>\n';
 }
-function _footnote_anchor(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
-  var id = 'fnref' + n;
-  if (tokens[idx].meta.subId > 0) {
-    id += ':' + tokens[idx].meta.subId;
-  }
-  return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
+function _footnote_anchor(tokens, idx, options) {
+  var n = _footnote_n(tokens, idx);
+  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : n;
+  return ' <a href="#fnref' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +233,7 @@ module.exports = function sub_plugin(md) {
       state.env.footnotes.list[footnoteId].count++;
 
       token      = state.push('footnote_ref', '', 0);
-      token.meta = { id: footnoteId, subId: footnoteSubId };
+      token.meta = { id: footnoteId, subId: footnoteSubId, label: label };
     }
 
     state.pos = pos;
@@ -270,7 +274,7 @@ module.exports = function sub_plugin(md) {
 
     for (i = 0, l = list.length; i < l; i++) {
       token      = new state.Token('footnote_open', '', 1);
-      token.meta = { id: i };
+      token.meta = { id: i, label: list[i].label };
       state.tokens.push(token);
 
       if (list[i].tokens) {
@@ -303,7 +307,7 @@ module.exports = function sub_plugin(md) {
       t = list[i].count > 0 ? list[i].count : 1;
       for (j = 0; j < t; j++) {
         token      = new state.Token('footnote_anchor', '', 0);
-        token.meta = { id: i, subId: j };
+        token.meta = { id: i, subId: j, label: list[i].label };
         state.tokens.push(token);
       }
 
