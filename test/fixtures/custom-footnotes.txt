@@ -1,0 +1,27 @@
+
+Custom ids/captions example:
+.
+Here is a footnote reference,[^1] and another,[^longnote] and an inline footnote ^[it works!].
+
+[^1]: Here is the footnote.
+
+[^longnote]: Here's one with multiple blocks.
+
+    Subsequent paragraphs are indented to show that they
+belong to the previous footnote.
+.
+<p>Here is a footnote reference,<sup class="footnote-ref"><a href="#fn-1" id="fnref-1">{1}</a></sup> and another,<sup class="footnote-ref"><a href="#fn-longnote" id="fnref-longnote">{longnote}</a></sup> and an inline footnote <sup class="footnote-ref"><a href="#fn3" id="fnref3">{3}</a></sup>.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1" class="footnote-item"><p>Here is the footnote. <a href="#fnref-1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn-longnote" class="footnote-item"><p>Here's one with multiple blocks.</p>
+<p>Subsequent paragraphs are indented to show that they
+belong to the previous footnote. <a href="#fnref-longnote" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>it works! <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.
