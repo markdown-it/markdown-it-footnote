@@ -23,7 +23,7 @@ function _footnote_block_close() {
 }
 function _footnote_open(tokens, idx) {
   var id = Number(tokens[idx].meta.id + 1).toString();
-  return '<li id="fn' + id + '"  class="footnote-item">';
+  return '<li id="fn' + id + '" class="footnote-item">';
 }
 function _footnote_close() {
   return '</li>\n';
