@@ -34,7 +34,8 @@ function _footnote_anchor(tokens, idx) {
   if (tokens[idx].meta.subId > 0) {
     id += ':' + tokens[idx].meta.subId;
   }
-  return ' <a href="#' + id + '" class="footnote-backref">\u21a9</a>'; /* ↩ */
+  /* ↩ with escape code to prevent display as Apple Emoji on iOS */
+  return ' <a href="#' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
