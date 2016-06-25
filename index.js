@@ -245,7 +245,7 @@ module.exports = function sub_plugin(md) {
 
     if (!state.env.footnotes) { return; }
 
-    state.tokens = state.tokens.filter(function(tok) {
+    state.tokens = state.tokens.filter(function (tok) {
       if (tok.type === 'footnote_reference_open') {
         insideRef = true;
         current = [];
