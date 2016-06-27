@@ -24,6 +24,7 @@ module.exports = function footnote_plugin(md, plugin_options) {
 
   var anchorFn = plugin_options && plugin_options.anchor ? plugin_options.anchor : anchorFnDefault;
   var captionFn = plugin_options && plugin_options.caption ? plugin_options.caption : captionFnDefault;
+  var headerFn = plugin_options && plugin_options.header ? plugin_options.header : '';
 
   function _footnote_n(tokens, idx) {
     var n = Number(tokens[idx].meta.id + 1).toString();
@@ -41,8 +42,10 @@ module.exports = function footnote_plugin(md, plugin_options) {
   }
 
   function _footnote_block_open(tokens, idx, options) {
+    var header = tokens[idx].markup;
     return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
            '<section class="footnotes">\n' +
+           (header ? '<h3 class="footnotes-header">' + header + '</h3>' : '') +
            '<ol class="footnotes-list">\n';
   }
 
@@ -289,6 +292,7 @@ module.exports = function footnote_plugin(md, plugin_options) {
     list = state.env.footnotes.list;
 
     token = new state.Token('footnote_block_open', '', 1);
+    token.markup = headerFn;
     state.tokens.push(token);
 
     for (i = 0, l = list.length; i < l; i++) {
