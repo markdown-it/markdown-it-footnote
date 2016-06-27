@@ -1,9 +1,10 @@
-2.1.0 / WIP
+3.0.0 / 2016-06-28
 ------------------
 
-- Add `env.docId`, [#8](https://github.com/markdown-it/markdown-it-footnote/pull/8).
-- Add overridable helpers: `md.renderer.rules.footnote_anchor_name`, `md.renderer.rules.footnote_caption`.
-- Fixed anchor symbol display on iOS, [#11](https://github.com/markdown-it/markdown-it-footnote/pull/11).
+- Add `env.docId` support to guarantee unique ancors for differenet docements.
+- Add overridable helpers: `md.renderer.rules.footnote_anchor_name`
+  & `md.renderer.rules.footnote_caption` to simplify templating.
+- Fixed anchor symbol display on iOS, #11.
 
 
 2.0.0 / 2015-10-05
