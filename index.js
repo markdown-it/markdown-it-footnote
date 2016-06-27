@@ -2,59 +2,70 @@
 //
 'use strict';
 
-function prefixedId(id, env) {
+
+////////////////////////////////////////////////////////////////////////////////
+
+function anchorFnDefault(n, token, env) {
   var prefix = '';
   if (typeof env.docId === 'string' && env.docId.length > 0) {
     prefix = '-' + env.docId + '-';
   }
-  return prefix + id;
+  return prefix + n;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Renderer partials
-
-function _footnote_n(tokens, idx) {
-  var n = Number(tokens[idx].meta.id + 1).toString();
-  if (tokens[idx].meta.subId > 0) {
-    n += ':' + tokens[idx].meta.subId;
-  }
-  return n;
+function captionFnDefault(n/*, token, env*/) {
+  return '[' + n + ']';
 }
 
-function _footnote_ref(tokens, idx, options, env) {
-  var n = _footnote_n(tokens, idx);
-  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : prefixedId(n, env);
-  var caption = options.footnoteCaption ? options.footnoteCaption(n, tokens[idx]) : '[' + n + ']';
-  return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + id + '">' + caption + '</a></sup>';
-}
-function _footnote_block_open(tokens, idx, options) {
-  return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
-         '<section class="footnotes">\n' +
-         '<ol class="footnotes-list">\n';
-}
-function _footnote_block_close() {
-  return '</ol>\n</section>\n';
-}
-function _footnote_open(tokens, idx, options, env) {
-  var n = _footnote_n(tokens, idx);
-  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : prefixedId(n, env);
-  return '<li id="fn' + id + '" class="footnote-item">';
-}
-function _footnote_close() {
-  return '</li>\n';
-}
-function _footnote_anchor(tokens, idx, options, env) {
-  var n = _footnote_n(tokens, idx);
-  var id = options.footnoteId ? options.footnoteId(n, tokens[idx]) : prefixedId(n, env);
-  /* ↩ with escape code to prevent display as Apple Emoji on iOS */
-  return ' <a href="#fnref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
-}
 
-////////////////////////////////////////////////////////////////////////////////
-
-module.exports = function sub_plugin(md) {
+module.exports = function footnote_plugin(md, plugin_options) {
   var parseLinkLabel = md.helpers.parseLinkLabel,
       isSpace = md.utils.isSpace;
+
+  var anchorFn = plugin_options && plugin_options.anchor ? plugin_options.anchor : anchorFnDefault;
+  var captionFn = plugin_options && plugin_options.caption ? plugin_options.caption : captionFnDefault;
+
+  function _footnote_n(tokens, idx) {
+    var n = Number(tokens[idx].meta.id + 1).toString();
+    if (tokens[idx].meta.subId > 0) {
+      n += ':' + tokens[idx].meta.subId;
+    }
+    return n;
+  }
+
+  function _footnote_ref(tokens, idx, options, env) {
+    var n = _footnote_n(tokens, idx);
+    var id = anchorFn(n, tokens[idx], env);
+    var caption = captionFn(n, tokens[idx], env);
+    return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + id + '">' + caption + '</a></sup>';
+  }
+
+  function _footnote_block_open(tokens, idx, options) {
+    return (options.xhtmlOut ? '<hr class="footnotes-sep" />\n' : '<hr class="footnotes-sep">\n') +
+           '<section class="footnotes">\n' +
+           '<ol class="footnotes-list">\n';
+  }
+
+  function _footnote_block_close() {
+    return '</ol>\n</section>\n';
+  }
+
+  function _footnote_open(tokens, idx, options, env) {
+    var n = _footnote_n(tokens, idx);
+    var id = anchorFn(n, tokens[idx], env);
+    return '<li id="fn' + id + '" class="footnote-item">';
+  }
+
+  function _footnote_close() {
+    return '</li>\n';
+  }
+
+  function _footnote_anchor(tokens, idx, options, env) {
+    var n = _footnote_n(tokens, idx);
+    var id = anchorFn(n, tokens[idx], env);
+    /* ↩ with escape code to prevent display as Apple Emoji on iOS */
+    return ' <a href="#fnref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
+  }
 
   md.renderer.rules.footnote_ref          = _footnote_ref;
   md.renderer.rules.footnote_block_open   = _footnote_block_open;

@@ -42,18 +42,18 @@ describe('custom docId in env', function () {
 });
 
 describe('custom footnote ids and labels', function () {
-  var md = require('markdown-it')({
-    footnoteId: function (n, token) {
+  var md = require('markdown-it')().use(require('../'), {
+    anchor: function (n, token) {
       if (token.meta.label) {
         return '-' + token.meta.label;
       }
       return n;
     },
 
-    footnoteCaption: function (n, token) {
+    caption: function (n, token) {
       return '{' + (token.meta.label || n) + '}';
     }
-  }).use(require('../'));
+  });
 
   generate(path.join(__dirname, 'fixtures/custom-footnotes.txt'), md);
 });
