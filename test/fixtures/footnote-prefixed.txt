@@ -1,0 +1,39 @@
+.
+Here is a footnote reference,[^1] and another.[^longnote]
+
+[^1]: Here is the footnote.
+
+[^longnote]: Here's one with multiple blocks.
+
+    Subsequent paragraphs are indented to show that they
+belong to the previous footnote.
+
+        { some.code }
+
+    The whole paragraph can be indented, or just the first
+    line.  In this way, multi-paragraph footnotes work like
+    multi-paragraph list items.
+
+This paragraph won't be part of the note, because it
+isn't indented.
+.
+<p>Here is a footnote reference,<sup class="footnote-ref"><a href="#fn-test-doc-id-1" id="fnref-test-doc-id-1">[1]</a></sup> and another.<sup class="footnote-ref"><a href="#fn-test-doc-id-2" id="fnref-test-doc-id-2">[2]</a></sup></p>
+<p>This paragraph won't be part of the note, because it
+isn't indented.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-test-doc-id-1" class="footnote-item"><p>Here is the footnote. <a href="#fnref-test-doc-id-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-test-doc-id-2" class="footnote-item"><p>Here's one with multiple blocks.</p>
+<p>Subsequent paragraphs are indented to show that they
+belong to the previous footnote.</p>
+<pre><code>{ some.code }
+</code></pre>
+<p>The whole paragraph can be indented, or just the first
+line.  In this way, multi-paragraph footnotes work like
+multi-paragraph list items. <a href="#fnref-test-doc-id-2" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+.

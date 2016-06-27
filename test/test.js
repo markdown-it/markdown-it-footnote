@@ -32,9 +32,16 @@ function generate(fixturePath, md, env) {
 }
 
 
-describe('markdown-it-footnote', function () {
-  var md = require('markdown-it')()
-              .use(require('../'));
+describe('footnote.txt', function () {
+  var md = require('markdown-it')().use(require('../'));
 
+  // Check that defaults work correctly
   generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
+});
+
+describe('custom docId in env', function () {
+  var md = require('markdown-it')().use(require('../'));
+
+  // Now check that using `env.documentId` works to prefix IDs
+  generate(path.join(__dirname, 'fixtures/footnote-prefixed.txt'), md, { docId: 'test-doc-id' });
 });
