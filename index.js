@@ -7,11 +7,6 @@
 
 function render_footnote_anchor_name(tokens, idx, options, env/*, slf*/) {
   var n = Number(tokens[idx].meta.id + 1).toString();
-
-  if (tokens[idx].meta.subId > 0) {
-    n += ':' + tokens[idx].meta.subId;
-  }
-
   var prefix = '';
 
   if (typeof env.docId === 'string') {
@@ -32,10 +27,15 @@ function render_footnote_caption(tokens, idx/*, options, env, slf*/) {
 }
 
 function render_footnote_ref(tokens, idx, options, env, slf) {
-  var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+  var id      = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
   var caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
+  var refid   = id;
 
-  return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + id + '">' + caption + '</a></sup>';
+  if (tokens[idx].meta.subId > 0) {
+    refid += ':' + tokens[idx].meta.subId;
+  }
+
+  return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + refid + '">' + caption + '</a></sup>';
 }
 
 function render_footnote_block_open(tokens, idx, options) {
@@ -51,6 +51,10 @@ function render_footnote_block_close() {
 function render_footnote_open(tokens, idx, options, env, slf) {
   var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
 
+  if (tokens[idx].meta.subId > 0) {
+    id += ':' + tokens[idx].meta.subId;
+  }
+
   return '<li id="fn' + id + '" class="footnote-item">';
 }
 
@@ -60,6 +64,10 @@ function render_footnote_close() {
 
 function render_footnote_anchor(tokens, idx, options, env, slf) {
   var id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+
+  if (tokens[idx].meta.subId > 0) {
+    id += ':' + tokens[idx].meta.subId;
+  }
 
   /* ↩ with escape code to prevent display as Apple Emoji on iOS */
   return ' <a href="#fnref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
