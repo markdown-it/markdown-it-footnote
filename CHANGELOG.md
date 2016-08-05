@@ -3,6 +3,7 @@
 
 - Fix anchor links in duplicate footnotes, #13.
 
+
 3.0.0 / 2016-06-28
 ------------------
 
