@@ -36,7 +36,7 @@ function render_footnote_ref(tokens, idx, options, env, slf) {
     refid += ':' + tokens[idx].meta.subId;
   }
 
-  return '<sup class="footnote-ref"><a href="#fn' + id + '" id="fnref' + refid + '">' + caption + '</a></sup>';
+  return '<sup class="footnote-ref"><a href="#' + options.prefix + id + '" id="'+ options.prefix + 'ref' + refid + '">' + caption + '</a></sup>';
 }
 
 function render_footnote_block_open(tokens, idx, options) {
@@ -56,7 +56,7 @@ function render_footnote_open(tokens, idx, options, env, slf) {
     id += ':' + tokens[idx].meta.subId;
   }
 
-  return '<li id="fn' + id + '" class="footnote-item">';
+  return '<li id="' +  options.prefix + ' + id + '" class="footnote-item">';
 }
 
 function render_footnote_close() {
@@ -71,11 +71,15 @@ function render_footnote_anchor(tokens, idx, options, env, slf) {
   }
 
   /* ↩ with escape code to prevent display as Apple Emoji on iOS */
-  return ' <a href="#fnref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
+  return ' <a href="#' +  options.prefix + 'ref' + id + '" class="footnote-backref">\u21a9\uFE0E</a>';
 }
 
 
-module.exports = function footnote_plugin(md) {
+module.exports = function footnote_plugin(md, options) {
+  
+  options = options || {};
+  options.prefix = options.prefix || 'fn';
+  
   var parseLinkLabel = md.helpers.parseLinkLabel,
       isSpace = md.utils.isSpace;
 
