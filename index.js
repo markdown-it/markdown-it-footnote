@@ -19,9 +19,9 @@ function render_footnote_anchor_name(tokens, idx, options, env/*, slf*/) {
 function render_footnote_caption(tokens, idx/*, options, env, slf*/) {
   var n = Number(tokens[idx].meta.id + 1).toString();
 
-  if (tokens[idx].meta.subId > 0) {
-    n += ':' + tokens[idx].meta.subId;
-  }
+  // if (tokens[idx].meta.subId > 0) {
+  //   n += ':' + tokens[idx].meta.subId;
+  // }
 
   return '[' + n + ']';
 }
