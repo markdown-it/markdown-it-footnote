@@ -55,7 +55,7 @@ function render_footnote_open(tokens, idx, options, env, slf) {
     id += ':' + tokens[idx].meta.subId;
   }
 
-  return '<li id="fn' + id + '" class="footnote-item">';
+  return '<li tabindex="-1" id="fn' + id + '" class="footnote-item">';
 }
 
 function render_footnote_close() {
