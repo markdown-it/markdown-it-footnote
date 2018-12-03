@@ -13,6 +13,9 @@
   "scripts": {
     "test": "make test"
   },
+  "engines": {
+    "node": ">=0.10.0"
+  },
   "devDependencies": {
     "browserify": "*",
     "coveralls": "^2.11.2",
@@ -21,7 +24,7 @@
     "lodash": "*",
     "markdown-it": "markdown-it/markdown-it",
     "markdown-it-testgen": "~0.1.0",
-    "mocha": "*",
+    "mocha": "^3.0.0",
     "request": "*",
     "uglify-js": "*"
   }
