@@ -39,6 +39,16 @@ describe('footnote.txt', function () {
   generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
 });
 
+describe('accessibility checks', function () {
+  it ('prints an accessible aria label', function () {
+    var md = markdownIt().use(markdownItFootnote, {
+      'aria-label': 'retour au texte'
+    });
+
+    generate(path.join(__dirname, 'fixtures/footnote-aria-label.txt'), md);
+  });
+});
+
 describe('custom docId in env', function () {
   var md = require('markdown-it')().use(require('../'));
 

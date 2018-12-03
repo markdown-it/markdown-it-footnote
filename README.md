@@ -32,11 +32,11 @@ isn’t indented.</p>
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1"  class="footnote-item"><p>Here is the footnote. <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1"  class="footnote-item"><p>Here is the footnote. <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 <li id="fn2"  class="footnote-item"><p>Here’s one with multiple blocks.</p>
 <p>Subsequent paragraphs are indented to show that they
-belong to the previous footnote. <a href="#fnref2" class="footnote-backref">↩</a></p>
+belong to the previous footnote. <a href="#fnref2" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>

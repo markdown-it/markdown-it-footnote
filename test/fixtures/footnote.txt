@@ -25,7 +25,7 @@ isn't indented.</p>
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>Here is the footnote. <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>Here is the footnote. <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 <li id="fn2" class="footnote-item"><p>Here's one with multiple blocks.</p>
 <p>Subsequent paragraphs are indented to show that they
@@ -34,7 +34,7 @@ belong to the previous footnote.</p>
 </code></pre>
 <p>The whole paragraph can be indented, or just the first
 line.  In this way, multi-paragraph footnotes work like
-multi-paragraph list items. <a href="#fnref2" class="footnote-backref">↩</a></p>
+multi-paragraph list items. <a href="#fnref2" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -55,11 +55,11 @@ They could terminate each other:
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
-<li id="fn2" class="footnote-item"><p>bar <a href="#fnref2" class="footnote-backref">↩</a></p>
+<li id="fn2" class="footnote-item"><p>bar <a href="#fnref2" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
-<li id="fn3" class="footnote-item"><p>baz <a href="#fnref3" class="footnote-backref">↩</a></p>
+<li id="fn3" class="footnote-item"><p>baz <a href="#fnref3" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -79,7 +79,7 @@ baz
 <section class="footnotes">
 <ol class="footnotes-list">
 <li id="fn1" class="footnote-item"><p>bar
-baz <a href="#fnref1" class="footnote-backref">↩</a></p>
+baz <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -113,7 +113,7 @@ note.]
 <ol class="footnotes-list">
 <li id="fn1" class="footnote-item"><p>Inlines notes are easier to write, since
 you don't have to pick an identifier and move down to type the
-note. <a href="#fnref1" class="footnote-backref">↩</a></p>
+note. <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -129,7 +129,7 @@ foo^[ *bar* ]
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p> <em>bar</em>  <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p> <em>bar</em>  <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -146,7 +146,7 @@ Duplicate footnotes:
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩︎</a> <a href="#fnref1:1" class="footnote-backref" aria-label="back to text">↩︎</a></p>
 </li>
 </ol>
 </section>
@@ -170,8 +170,8 @@ Indents:
 <section class="footnotes">
 <ol class="footnotes-list">
 <li id="fn1" class="footnote-item"><h2>foo</h2>
- <a href="#fnref1" class="footnote-backref">↩</a></li>
-<li id="fn2" class="footnote-item"><p>foo <a href="#fnref2" class="footnote-backref">↩</a></p>
+ <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></li>
+<li id="fn2" class="footnote-item"><p>foo <a href="#fnref2" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -191,11 +191,11 @@ Indents for the first line:
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 <li id="fn2" class="footnote-item"><pre><code>foo
 </code></pre>
- <a href="#fnref2" class="footnote-backref">↩</a></li>
+ <a href="#fnref2" class="footnote-backref" aria-label="back to text">↩</a></li>
 </ol>
 </section>
 .
@@ -210,7 +210,7 @@ Indents for the first line (tabs):
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>foo <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -227,7 +227,7 @@ Security 1
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>blah <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>blah <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
@@ -244,7 +244,7 @@ Security 2
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
-<li id="fn1" class="footnote-item"><p>blah <a href="#fnref1" class="footnote-backref">↩</a></p>
+<li id="fn1" class="footnote-item"><p>blah <a href="#fnref1" class="footnote-backref" aria-label="back to text">↩</a></p>
 </li>
 </ol>
 </section>
