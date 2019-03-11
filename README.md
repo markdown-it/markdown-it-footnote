@@ -88,6 +88,30 @@ _Differences in browser._ If you load script directly into the page, without
 package system, module will add itself globally as `window.markdownitFootnote`.
 
 
+### Customize
+
+If you want to customize the output, you'll need to replace the template
+functions. To see which templates exist and their default implementations,
+look in [`index.js`](index.js). The API of these template functions is out of
+scope for this plugin's documentation; you can read more about it [in the
+markdown-it
+documentation](https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer).
+
+To demonstrate with an example, here is how you might replace the `<hr>` that
+this plugin emits by default with an `<h4>` emitted by your own template
+function override:
+
+```js
+const md = require('markdown-it')().use(require('markdown-it-footnote'));
+
+md.renderer.rules.footnote_block_open = () => (
+  '<h4 class="mt-3">Footnotes</h4>\n' +
+  '<section class="footnotes">\n' +
+  '<ol class="footnotes-list">\n'
+);
+```
+
+
 ## License
 
 [MIT](https://github.com/markdown-it/markdown-it-footnote/blob/master/LICENSE)
