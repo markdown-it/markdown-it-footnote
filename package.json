@@ -18,7 +18,6 @@
     "coveralls": "^3.0.2",
     "eslint": "~2.13.1",
     "istanbul": "^0.4.5",
-    "lodash": "*",
     "markdown-it": "markdown-it/markdown-it",
     "markdown-it-testgen": "~0.1.0",
     "mocha": "^5.2.0",
