@@ -14,15 +14,14 @@
     "test": "make test"
   },
   "devDependencies": {
-    "browserify": "*",
-    "coveralls": "^2.11.2",
+    "browserify": "^16.2.3",
+    "coveralls": "^3.0.2",
     "eslint": "~2.13.1",
-    "istanbul": "*",
+    "istanbul": "^0.4.5",
     "lodash": "*",
     "markdown-it": "markdown-it/markdown-it",
     "markdown-it-testgen": "~0.1.0",
-    "mocha": "*",
-    "request": "*",
+    "mocha": "^5.2.0",
     "uglify-js": "*"
   }
 }
