@@ -31,7 +31,7 @@ browserify:
 		./node_modules/.bin/browserify ./ -s markdownitFootnote \
 		) > dist/markdown-it-footnote.js
 	# Minify
-	./node_modules/.bin/uglifyjs dist/markdown-it-footnote.js -b beautify=false,ascii-only=true -c -m \
+	./node_modules/.bin/terser dist/markdown-it-footnote.js -b beautify=false,ascii_only=true -c -m \
 		--preamble "/*! ${NPM_PACKAGE} ${NPM_VERSION} ${GITHUB_PROJ} @license MIT */" \
 		> dist/markdown-it-footnote.min.js
 

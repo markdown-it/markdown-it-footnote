@@ -21,6 +21,6 @@
     "markdown-it": "markdown-it/markdown-it",
     "markdown-it-testgen": "~0.1.0",
     "mocha": "^5.2.0",
-    "uglify-js": "*"
+    "terser": "^3.17.0"
   }
 }
