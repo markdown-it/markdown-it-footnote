@@ -212,7 +212,10 @@ module.exports = function footnote_plugin(md) {
       token      = state.push('footnote_ref', '', 0);
       token.meta = { id: footnoteId };
 
-      state.env.footnotes.list[footnoteId] = { tokens: tokens };
+      state.env.footnotes.list[footnoteId] = {
+        content: state.src.slice(labelStart, labelEnd),
+        tokens: tokens
+      };
     }
 
     state.pos = labelEnd + 1;
@@ -320,7 +323,7 @@ module.exports = function footnote_plugin(md) {
 
         token          = new state.Token('inline', '', 0);
         token.children = list[i].tokens;
-        token.content  = '';
+        token.content  = list[i].content;
         tokens.push(token);
 
         token          = new state.Token('paragraph_close', 'p', -1);

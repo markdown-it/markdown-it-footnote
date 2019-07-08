@@ -32,7 +32,7 @@ function generate(fixturePath, md, env) {
 
 
 describe('footnote.txt', function () {
-  var md = require('markdown-it')().use(require('../'));
+  var md = require('markdown-it')({ linkify: true }).use(require('../'));
 
   // Check that defaults work correctly
   generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
