@@ -264,3 +264,21 @@ Example^[this is another example https://github.com]
 </ol>
 </section>
 .
+
+
+Regression test for #42
+.
+foo[^1] bar[^2].
+
+[^1]:[^2]: baz
+.
+<p>foo<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup> bar<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"> <a href="#fnref1" class="footnote-backref">↩︎</a></li>
+<li id="fn2" class="footnote-item"><p>baz <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.

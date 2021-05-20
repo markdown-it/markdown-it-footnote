@@ -334,7 +334,7 @@ module.exports = function footnote_plugin(md) {
         tokens = refTokens[':' + list[i].label];
       }
 
-      state.tokens = state.tokens.concat(tokens);
+      if (tokens) state.tokens = state.tokens.concat(tokens);
       if (state.tokens[state.tokens.length - 1].type === 'paragraph_close') {
         lastParagraph = state.tokens.pop();
       } else {
