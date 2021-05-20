@@ -1,4 +1,4 @@
-3.0.3 / WIP
+3.0.3 / 2021-05-20
 ------------------
 
 - Fix crash on nested footnotes, #42.
