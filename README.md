@@ -88,6 +88,25 @@ _Differences in browser._ If you load script directly into the page, without
 package system, module will add itself globally as `window.markdownitFootnote`.
 
 
+### Options
+
+The markdown-it-footnote plugin can be customized by adding options as a parameter.
+The default setting is to be compatible with the prior implementation.
+
+```js
+var md = require('markdown-it')();
+var mdFootnotes = require('markdown-it-footnote');
+
+md.use(mdFootnotes, { backref: false });
+```
+
+**backref** -- by setting this option to `false`
+the backlinks in footnodes are not rendered and the links to the footnode do not contain sub-ids.
+This is especially useful on documents that reuse the same footnote annotation very often.
+
+The 'backref' option defaults to `true`.
+
+
 ### Customize
 
 If you want to customize the output, you'll need to replace the template
