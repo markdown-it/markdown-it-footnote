@@ -111,6 +111,24 @@ md.renderer.rules.footnote_block_open = () => (
 );
 ```
 
+Here's another example that customizes footnotes for epub books:
+
+```js
+const backrefLabel = 'back to text';
+
+const epubRules = {
+  footnote_ref: ['<a', '<a epub:type="noteref"'],
+  footnote_open: ['<li', '<li epub:type="footnote"'],
+  footnote_anchor: ['<a', `<a aria-label="${backrefLabel}"`],
+}
+
+Object.keys(epubRules).map(rule => {
+  let defaultRender = md.renderer.rules[rule];
+  md.renderer.rules[rule] = (tokens, idx, options, env, self) => {
+    return defaultRender(tokens, idx, options, env, self).replace(...epubRules[rule]);
+  }
+})
+```
 
 ## License
 
