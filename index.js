@@ -9,7 +9,7 @@ function render_footnote_anchor_name(tokens, idx, options, env/*, slf*/) {
   var n = Number(tokens[idx].meta.id + 1).toString();
   var prefix = '';
 
-  if (typeof env.docId === 'string') {
+  if (env && typeof env.docId === 'string') {
     prefix = '-' + env.docId + '-';
   }
 
