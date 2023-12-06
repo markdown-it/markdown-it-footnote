@@ -1,3 +1,10 @@
+4.0.0 / 2023-12-06
+------------------
+
+- Rewrite to ESM.
+- Remove `dist/` from repo (build on package publish).
+
+
 3.0.3 / 2021-05-20
 ------------------
 

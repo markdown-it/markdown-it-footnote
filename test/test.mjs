@@ -1,19 +1,18 @@
-'use strict';
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+import assert from 'node:assert'
+import markdownit from 'markdown-it'
+import testgen from 'markdown-it-testgen'
 
-
-var assert   = require('assert');
-var testgen  = require('markdown-it-testgen');
-var path     = require('path');
-
-/*eslint-env mocha*/
+import footnote from '../index.mjs'
 
 // Most of the rest of this is inlined from generate(), but modified
 // so we can pass in an `env` object
-function generate(fixturePath, md, env) {
+function generate (fixturePath, md, env) {
   testgen.load(fixturePath, {}, function (data) {
-    data.meta = data.meta || {};
+    data.meta = data.meta || {}
 
-    var desc = data.meta.desc || path.relative(fixturePath, data.file);
+    const desc = data.meta.desc || path.relative(fixturePath, data.file);
 
     (data.meta.skip ? describe.skip : describe)(desc, function () {
       data.fixtures.forEach(function (fixture) {
@@ -23,24 +22,23 @@ function generate(fixturePath, md, env) {
           assert.strictEqual(
             md.render(fixture.first.text, Object.assign({}, env || {})),
             fixture.second.text.replace(/\u21a9(?!\ufe0e)/g, '\u21a9\ufe0e')
-          );
-        });
-      });
-    });
-  });
+          )
+        })
+      })
+    })
+  })
 }
 
-
 describe('footnote.txt', function () {
-  var md = require('markdown-it')({ linkify: true }).use(require('../'));
+  const md = markdownit({ linkify: true }).use(footnote)
 
   // Check that defaults work correctly
-  generate(path.join(__dirname, 'fixtures/footnote.txt'), md);
-});
+  generate(fileURLToPath(new URL('fixtures/footnote.txt', import.meta.url)), md)
+})
 
 describe('custom docId in env', function () {
-  var md = require('markdown-it')().use(require('../'));
+  const md = markdownit().use(footnote)
 
   // Now check that using `env.documentId` works to prefix IDs
-  generate(path.join(__dirname, 'fixtures/footnote-prefixed.txt'), md, { docId: 'test-doc-id' });
-});
+  generate(fileURLToPath(new URL('fixtures/footnote-prefixed.txt', import.meta.url)), md, { docId: 'test-doc-id' })
+})
