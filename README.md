@@ -1,6 +1,6 @@
 # markdown-it-footnote
 
-[![Build Status](https://img.shields.io/travis/markdown-it/markdown-it-footnote/master.svg?style=flat)](https://travis-ci.org/markdown-it/markdown-it-footnote)
+[![CI](https://github.com/markdown-it/markdown-it-footnote/actions/workflows/ci.yml/badge.svg)](https://github.com/markdown-it/markdown-it-footnote/actions/workflows/ci.yml)
 [![NPM version](https://img.shields.io/npm/v/markdown-it-footnote.svg?style=flat)](https://www.npmjs.org/package/markdown-it-footnote)
 [![Coverage Status](https://img.shields.io/coveralls/markdown-it/markdown-it-footnote/master.svg?style=flat)](https://coveralls.io/r/markdown-it/markdown-it-footnote?branch=master)
 
