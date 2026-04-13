@@ -14,12 +14,14 @@ function render_footnote_anchor_name (tokens, idx, options, env/*, slf */) {
   return prefix + n
 }
 
-function render_footnote_caption (tokens, idx/*, options, env, slf */) {
-  let n = Number(tokens[idx].meta.id + 1).toString()
+function render_footnote_caption (opts) {
+  return (tokens, idx/*, options, env, slf */) => {
+    let n = Number(tokens[idx].meta.id + 1).toString()
 
-  if (tokens[idx].meta.subId > 0) n += `:${tokens[idx].meta.subId}`
+    if (tokens[idx].meta.subId > 0 && opts.sub_ids) n += `:${tokens[idx].meta.subId}`
 
-  return n
+    return n
+  }
 }
 
 function render_footnote_ref (tokens, idx, options, env, slf) {
@@ -68,16 +70,27 @@ function render_footnote_close () {
   return '</li>\n'
 }
 
-function render_footnote_anchor (tokens, idx, options, env, slf) {
-  let id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf)
+function render_footnote_anchor (opts) {
+  return (tokens, idx, options, env, slf) => {
+    let id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf)
 
-  if (tokens[idx].meta.subId > 0) id += `:${tokens[idx].meta.subId}`
+    if (tokens[idx].meta.subId > 0) id += `:${tokens[idx].meta.subId}`
 
-  /* ↩ with escape code to prevent display as Apple Emoji on iOS */
-  return ` <a href="#fnref${id}" class="footnote-backref">\u21a9\uFE0E</a>`
+    /* ↩ with escape code to prevent display as Apple Emoji on iOS */
+    return opts.backrefs ? ` <a href="#fnref${id}" class="footnote-backref">\u21a9\uFE0E</a>` : ''
+  }
 }
 
-export default function footnote_plugin (md) {
+export default function footnote_plugin (
+  md,
+  {
+    /* multiple refernces to the same footnote are enumerated using sub-ids ([2] [2:1] [2:2]) */
+    sub_ids = true,
+    /* footnotes contain a back-link to all their references */
+    backrefs = true
+  } = {}
+) {
+  const options = { sub_ids, backrefs }
   const parseLinkLabel = md.helpers.parseLinkLabel
   const isSpace = md.utils.isSpace
 
@@ -87,10 +100,10 @@ export default function footnote_plugin (md) {
   md.renderer.rules.footnote_block_close  = render_footnote_block_close
   md.renderer.rules.footnote_open         = render_footnote_open
   md.renderer.rules.footnote_close        = render_footnote_close
-  md.renderer.rules.footnote_anchor       = render_footnote_anchor
+  md.renderer.rules.footnote_anchor       = render_footnote_anchor(options)
 
   // helpers (only used in other rules, no tokens are attached to those)
-  md.renderer.rules.footnote_caption      = render_footnote_caption
+  md.renderer.rules.footnote_caption      = render_footnote_caption(options)
   md.renderer.rules.footnote_anchor_name  = render_footnote_anchor_name
 
   // Process footnote block definition

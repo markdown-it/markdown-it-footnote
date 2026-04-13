@@ -36,6 +36,20 @@ describe('footnote.txt', function () {
   generate(fileURLToPath(new URL('fixtures/footnote.txt', import.meta.url)), md)
 })
 
+describe('no backrefs', function () {
+  const md = markdownit({ linkify: true }).use(footnote, { backrefs: false })
+
+  // Check that backrefs are disabled correctly
+  generate(fileURLToPath(new URL('fixtures/no-backrefs.txt', import.meta.url)), md)
+})
+
+describe('no sub-ids', function () {
+  const md = markdownit({ linkify: true }).use(footnote, { sub_ids: false, backrefs: false })
+
+  // Check that sub-ids are disabled correctly
+  generate(fileURLToPath(new URL('fixtures/no-sub-ids.txt', import.meta.url)), md)
+})
+
 describe('custom docId in env', function () {
   const md = markdownit().use(footnote)
 

@@ -1,0 +1,43 @@
+
+No backrefs in the footnotes
+
+.
+[^1][^2][^3]
+
+[^1]: foo
+[^2]: bar
+[^3]: baz
+.
+<p><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup><sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>foo</p>
+</li>
+<li id="fn2" class="footnote-item"><p>bar</p>
+</li>
+<li id="fn3" class="footnote-item"><p>baz</p>
+</li>
+</ol>
+</section>
+.
+
+
+Also works with inline notes:
+
+.
+Here is an inline note.^[Inlines notes are easier to write, since
+you don't have to pick an identifier and move down to type the
+note.]
+.
+<p>Here is an inline note.<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Inlines notes are easier to write, since
+you don't have to pick an identifier and move down to type the
+note.</p>
+</li>
+</ol>
+</section>
+.

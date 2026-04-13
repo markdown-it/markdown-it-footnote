@@ -286,18 +286,21 @@ foo[^1] bar[^2].
 
 Grouped footnote refs in one <sup>
 .
-Group footnotes [^b ^a    ^b].
+Group footnotes [^b ^a    ^b] [^c].
 
 [^a]: Alpha
 [^b]: Beta
+[^c]: Gamma
 .
-<p>Group footnotes <sup class="footnote-ref">[<a href="#fn1" id="fnref1">1</a>, <a href="#fn2" id="fnref2">2</a>, <a href="#fn1" id="fnref1:1">1:1</a>]</sup>.</p>
+<p>Group footnotes <sup class="footnote-ref">[<a href="#fn1" id="fnref1">1</a>, <a href="#fn2" id="fnref2">2</a>, <a href="#fn1" id="fnref1:1">1:1</a>]</sup> <sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>.</p>
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
 <li id="fn1" class="footnote-item"><p>Beta <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
 </li>
 <li id="fn2" class="footnote-item"><p>Alpha <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>Gamma <a href="#fnref3" class="footnote-backref">↩︎</a></p>
 </li>
 </ol>
 </section>
