@@ -282,3 +282,23 @@ foo[^1] bar[^2].
 </ol>
 </section>
 .
+
+
+Grouped footnote refs in one <sup>
+.
+Group footnotes [^b ^a    ^b].
+
+[^a]: Alpha
+[^b]: Beta
+.
+<p>Group footnotes <sup class="footnote-ref">[<a href="#fn1" id="fnref1">1</a>, <a href="#fn2" id="fnref2">2</a>, <a href="#fn1" id="fnref1:1">1:1</a>]</sup>.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Beta <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>Alpha <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.

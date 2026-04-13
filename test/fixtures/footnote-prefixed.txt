@@ -37,3 +37,23 @@ multi-paragraph list items. <a href="#fnref-test-doc-id-2" class="footnote-backr
 </ol>
 </section>
 .
+
+
+Grouped footnote refs with docId prefix
+.
+Group footnotes [^b ^a].
+
+[^a]: Alpha
+[^b]: Beta
+.
+<p>Group footnotes <sup class="footnote-ref">[<a href="#fn-test-doc-id-1" id="fnref-test-doc-id-1">1</a>, <a href="#fn-test-doc-id-2" id="fnref-test-doc-id-2">2</a>]</sup>.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-test-doc-id-1" class="footnote-item"><p>Beta <a href="#fnref-test-doc-id-1" class="footnote-backref">↩</a></p>
+</li>
+<li id="fn-test-doc-id-2" class="footnote-item"><p>Alpha <a href="#fnref-test-doc-id-2" class="footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+.

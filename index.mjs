@@ -19,7 +19,7 @@ function render_footnote_caption (tokens, idx/*, options, env, slf */) {
 
   if (tokens[idx].meta.subId > 0) n += `:${tokens[idx].meta.subId}`
 
-  return `[${n}]`
+  return n
 }
 
 function render_footnote_ref (tokens, idx, options, env, slf) {
@@ -28,8 +28,22 @@ function render_footnote_ref (tokens, idx, options, env, slf) {
   let refid = id
 
   if (tokens[idx].meta.subId > 0) refid += `:${tokens[idx].meta.subId}`
+  return `<sup class="footnote-ref"><a href="#fn${id}" id="fnref${refid}">[${caption}]</a></sup>`
+}
 
-  return `<sup class="footnote-ref"><a href="#fn${id}" id="fnref${refid}">${caption}</a></sup>`
+function render_footnote_ref_group (tokens, idx, options, env, slf) {
+  const links = tokens[idx].meta.refs.map((ref) => {
+    const refToken = { meta: ref }
+    const id = slf.rules.footnote_anchor_name([refToken], 0, options, env, slf)
+    const caption = slf.rules.footnote_caption([refToken], 0, options, env, slf)
+    let refid = id
+
+    if (ref.subId > 0) refid += `:${ref.subId}`
+
+    return `<a href="#fn${id}" id="fnref${refid}">${caption}</a>`
+  })
+
+  return `<sup class="footnote-ref">[${links.join(', ')}]</sup>`
 }
 
 function render_footnote_block_open (tokens, idx, options) {
@@ -68,6 +82,7 @@ export default function footnote_plugin (md) {
   const isSpace = md.utils.isSpace
 
   md.renderer.rules.footnote_ref          = render_footnote_ref
+  md.renderer.rules.footnote_ref_group    = render_footnote_ref_group
   md.renderer.rules.footnote_block_open   = render_footnote_block_open
   md.renderer.rules.footnote_block_close  = render_footnote_block_close
   md.renderer.rules.footnote_open         = render_footnote_open
@@ -86,20 +101,20 @@ export default function footnote_plugin (md) {
     // line should be at least 5 chars - "[^x]:"
     if (start + 4 > max) return false
 
-    if (state.src.charCodeAt(start) !== 0x5B/* [ */) return false
-    if (state.src.charCodeAt(start + 1) !== 0x5E/* ^ */) return false
+    if (state.src[start] !== '[') return false
+    if (state.src[start + 1] !== '^') return false
 
     let pos
 
     for (pos = start + 2; pos < max; pos++) {
-      if (state.src.charCodeAt(pos) === 0x20) return false
-      if (state.src.charCodeAt(pos) === 0x5D /* ] */) {
+      if (state.src[pos] === ' ') return false
+      if (state.src[pos] === ']') {
         break
       }
     }
 
     if (pos === start + 2) return false // no empty footnote labels
-    if (pos + 1 >= max || state.src.charCodeAt(++pos) !== 0x3A /* : */) return false
+    if (pos + 1 >= max || state.src[++pos] !== ':') return false
     if (silent) return true
     pos++
 
@@ -170,8 +185,8 @@ export default function footnote_plugin (md) {
     const start = state.pos
 
     if (start + 2 >= max) return false
-    if (state.src.charCodeAt(start) !== 0x5E/* ^ */) return false
-    if (state.src.charCodeAt(start + 1) !== 0x5B/* [ */) return false
+    if (state.src[start] !== '^') return false
+    if (state.src[start + 1] !== '[') return false
 
     const labelStart = start + 2
     const labelEnd = parseLinkLabel(state, start + 1)
@@ -218,15 +233,14 @@ export default function footnote_plugin (md) {
     if (start + 3 > max) return false
 
     if (!state.env.footnotes || !state.env.footnotes.refs) return false
-    if (state.src.charCodeAt(start) !== 0x5B/* [ */) return false
-    if (state.src.charCodeAt(start + 1) !== 0x5E/* ^ */) return false
+    if (state.src[start] !== '[') return false
+    if (state.src[start + 1] !== '^') return false
 
     let pos
 
     for (pos = start + 2; pos < max; pos++) {
-      if (state.src.charCodeAt(pos) === 0x20) return false
-      if (state.src.charCodeAt(pos) === 0x0A) return false
-      if (state.src.charCodeAt(pos) === 0x5D /* ] */) {
+      if (state.src[pos] === '\n') return false
+      if (state.src[pos] === ']') {
         break
       }
     }
@@ -236,26 +250,50 @@ export default function footnote_plugin (md) {
     pos++
 
     const label = state.src.slice(start + 2, pos - 1)
-    if (typeof state.env.footnotes.refs[`:${label}`] === 'undefined') return false
+    let labels = null
+
+    // Group syntax: [^id ^id2 ^id3]
+    if (label.includes(' ')) {
+      const maybeGrouped = label.trim().split(/\s+/)
+      if (
+        maybeGrouped.length > 1 &&
+        maybeGrouped[0].length > 0 &&
+        maybeGrouped.slice(1).every(part => part.length > 1 && part[0] === '^')
+      ) {
+        labels = [maybeGrouped[0], ...maybeGrouped.slice(1).map(part => part.slice(1))]
+      }
+    }
+
+    if (!labels && typeof state.env.footnotes.refs[`:${label}`] === 'undefined') return false
+    if (labels && labels.some(item => typeof state.env.footnotes.refs[`:${item}`] === 'undefined')) return false
 
     if (!silent) {
       if (!state.env.footnotes.list) state.env.footnotes.list = []
 
-      let footnoteId
+      function getRefMeta (currentLabel) {
+        let footnoteId
 
-      if (state.env.footnotes.refs[`:${label}`] < 0) {
-        footnoteId = state.env.footnotes.list.length
-        state.env.footnotes.list[footnoteId] = { label, count: 0 }
-        state.env.footnotes.refs[`:${label}`] = footnoteId
-      } else {
-        footnoteId = state.env.footnotes.refs[`:${label}`]
+        if (state.env.footnotes.refs[`:${currentLabel}`] < 0) {
+          footnoteId = state.env.footnotes.list.length
+          state.env.footnotes.list[footnoteId] = { label: currentLabel, count: 0 }
+          state.env.footnotes.refs[`:${currentLabel}`] = footnoteId
+        } else {
+          footnoteId = state.env.footnotes.refs[`:${currentLabel}`]
+        }
+
+        const footnoteSubId = state.env.footnotes.list[footnoteId].count
+        state.env.footnotes.list[footnoteId].count++
+
+        return { id: footnoteId, subId: footnoteSubId, label: currentLabel }
       }
 
-      const footnoteSubId = state.env.footnotes.list[footnoteId].count
-      state.env.footnotes.list[footnoteId].count++
-
-      const token = state.push('footnote_ref', '', 0)
-      token.meta = { id: footnoteId, subId: footnoteSubId, label }
+      if (labels) {
+        const token = state.push('footnote_ref_group', '', 0)
+        token.meta = { refs: labels.map(getRefMeta) }
+      } else {
+        const token = state.push('footnote_ref', '', 0)
+        token.meta = getRefMeta(label)
+      }
     }
 
     state.pos = pos
