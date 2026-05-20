@@ -92,7 +92,7 @@ package system, module will add itself globally as `window.markdownitFootnote`.
 
 If you want to customize the output, you'll need to replace the template
 functions. To see which templates exist and their default implementations,
-look in [`index.js`](index.js). The API of these template functions is out of
+look in [`index.mjs`](index.mjs). The API of these template functions is out of
 scope for this plugin's documentation; you can read more about it [in the
 markdown-it
 documentation](https://github.com/markdown-it/markdown-it/blob/master/docs/architecture.md#renderer).
