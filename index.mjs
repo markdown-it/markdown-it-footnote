@@ -266,28 +266,26 @@ export default function footnote_plugin (md) {
   // Glue footnote tokens to end of token stream
   function footnote_tail (state) {
     let tokens
-    let current
-    let currentLabel
-    let insideRef = false
+    const refStack = []
     const refTokens = {}
 
     if (!state.env.footnotes) { return }
 
     state.tokens = state.tokens.filter(function (tok) {
       if (tok.type === 'footnote_reference_open') {
-        insideRef = true
-        current = []
-        currentLabel = tok.meta.label
+        const current = []
+        refStack.push(current)
+        // prepend ':' to avoid conflict with Object.prototype members
+        refTokens[':' + tok.meta.label] = current
         return false
       }
       if (tok.type === 'footnote_reference_close') {
-        insideRef = false
-        // prepend ':' to avoid conflict with Object.prototype members
-        refTokens[':' + currentLabel] = current
+        refStack.pop()
         return false
       }
-      if (insideRef) { current.push(tok) }
-      return !insideRef
+      const current = refStack[refStack.length - 1]
+      if (current) { current.push(tok) }
+      return !current
     })
 
     if (!state.env.footnotes.list) { return }
