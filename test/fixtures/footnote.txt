@@ -282,3 +282,73 @@ foo[^1] bar[^2].
 </ol>
 </section>
 .
+
+
+Nested definitions preserve the surrounding footnote content:
+.
+Main text.[^1] More text.[^2]
+
+[^1]: First note.
+
+    [^2]: Second note.
+
+    Tail of first note.
+
+After.
+.
+<p>Main text.<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup> More text.<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></p>
+<p>After.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>First note.</p>
+<p>Tail of first note. <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>Second note. <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.
+
+
+Unreferenced outer definitions do not leak their content into the body:
+.
+Main text.[^inner]
+
+[^outer]: Outer note.
+
+    [^inner]: Inner note.
+
+    Tail of outer note.
+
+After.
+.
+<p>Main text.<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<p>After.</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>Inner note. <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.
+
+
+Nested definitions with the same label preserve the last definition:
+.
+Body[^a]
+
+[^a]: outer
+
+    [^a]: inner
+.
+<p>Body<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>inner <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+.
